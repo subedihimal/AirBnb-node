@@ -5,6 +5,7 @@ import { genericErrorHandler } from "./middleware/error.middleware";
 import logger from './config/logger.config'
 import { attachCoorelationMiddleware } from "./middleware/correlation.middleware";
 import sequelize from "./db/models/sequelize";
+import hotelRouter from "./routers/hotel.router";
 
 const app = express();
 const PORT = serverConfig.PORT;
@@ -18,6 +19,7 @@ app.use(attachCoorelationMiddleware);
 //Routes
 //Expects JSON Body and Query Params
 app.use('/ping',pingRouter);
+app.use('/hotels',hotelRouter);
 
 //Custom Error Handling Middleware
 app.use(genericErrorHandler);

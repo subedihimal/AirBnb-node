@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createHotelService } from "../services/hotel.service";
+import { createHotelService, getHotelByIdService } from "../services/hotel.service";
 import { success } from "zod";
 
 export async function createHotelHandler(req: Request, res: Response, next: NextFunction){
@@ -11,4 +11,14 @@ export async function createHotelHandler(req: Request, res: Response, next: Next
         success: true, 
     })
 
+}
+
+export async function getHotelByIdHandler(req: Request, res: Response, next: NextFunction){
+    const hotelResponse = await getHotelByIdService(Number(req.params.id));
+
+    res.status(200).json({
+        message: "Hotel Found",
+        data: hotelResponse,
+        success: true,
+    })
 }
