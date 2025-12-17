@@ -32,5 +32,6 @@ app.listen(PORT, async ()=>{
 
     await sequelize.authenticate();
     logger.info("Connection to the db established");
+    logger.info('----------------------------------------');
 
 });
