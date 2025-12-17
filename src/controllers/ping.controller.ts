@@ -13,7 +13,7 @@ export const pingHandler = (req: Request,res: Response)=>{
 
 // Error Implementation 
 
-// import { NotFound } from "../utils/errors/app.error";
+// import { NotFoundError } from "../utils/errors/app.error";
 // import fs from "fs/promises"
 
 
@@ -22,6 +22,6 @@ export const pingHandler = (req: Request,res: Response)=>{
 //        await fs.readFile("sample");
 //        res.status(200).json({message: "Test"});   
 //     }catch(error: any){
-//         throw new NotFound("File Not Found")
+//         throw new NotFoundError("File Not Found")
 //     }
 // }

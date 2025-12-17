@@ -22,7 +22,7 @@ export class BadRequestError implements AppError{
         this.statusCode = 400;
     }
 }
-export class NotFound implements AppError{
+export class NotFoundError implements AppError{
     statusCode: number;
     message: string;
     name: string;
