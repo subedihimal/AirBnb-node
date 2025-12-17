@@ -9,7 +9,6 @@ module.exports = {
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(225) NOT NULL,
         address VARCHAR(225) NOT NULL,
-        city VARCHAR(225) NOT NULL,
         location VARCHAR(225) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

@@ -4,6 +4,7 @@ import pingRouter from "./routers/ping.router";
 import { genericErrorHandler } from "./middleware/error.middleware";
 import logger from './config/logger.config'
 import { attachCoorelationMiddleware } from "./middleware/correlation.middleware";
+import sequelize from "./db/models/sequelize";
 
 const app = express();
 const PORT = serverConfig.PORT;
@@ -22,8 +23,12 @@ app.use('/ping',pingRouter);
 app.use(genericErrorHandler);
 
 
-app.listen(PORT, ()=>{
+app.listen(PORT, async ()=>{
     console.log(`Server is running at: ${PORT}`);
     //Winston Logger
     logger.info("Server Ran At the current time", {"anything data":"This is data area"});
+
+    await sequelize.authenticate();
+    logger.info("Connection to the db established");
+
 });

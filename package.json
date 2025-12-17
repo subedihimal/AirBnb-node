@@ -10,7 +10,8 @@
     "start": "ts-node src/server.ts",
     "dev": "nodemon src/server.ts",
     "migrate": "sequelize-cli db:migrate",
-    "rollback": "sequelize-cli db:migrate:undo"
+    "rollback": "sequelize-cli db:migrate:undo",
+    "rollbackall":"sequelize-cli db:migrate:undo:all"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
