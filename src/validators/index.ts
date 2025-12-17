@@ -7,7 +7,7 @@ export const validateRequestBody = (schema: ZodType)=>{
     return async (req: Request , res: Response, next: NextFunction) =>{
         try{
             logger.info("Validating Request Body");
-            schema.parseAsync(req.body);
+            await schema.parseAsync(req.body);
             logger.info("Request Body Validated")
             next(); 
         }catch(error){
@@ -17,7 +17,7 @@ export const validateRequestBody = (schema: ZodType)=>{
                 error: error,
 
             });
-        }
+         }
     }
 }
 
