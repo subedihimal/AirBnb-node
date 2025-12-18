@@ -1,9 +1,7 @@
-import { error } from "node:console";
 import logger from "../config/logger.config";
 import Hotel from "../db/models/hotel";
 import { createHotelDTO } from "../dto/hotel.dto";
 import { NotFoundError } from "../utils/errors/app.error";
-import { ExceptionHandler } from "winston";
 
 //Creating Hotel
 export async function createHotel(hotelData: createHotelDTO) {
@@ -15,7 +13,13 @@ export async function createHotel(hotelData: createHotelDTO) {
 
 //Search Hotel By Id
 export async function getHotelById(id:number){
-    const hotel = await Hotel.findByPk(id);
+    const hotel = await Hotel.findOne({
+        where:{
+            id:id,
+            deletedAt: null,
+        }
+        
+    });
     if(!hotel){
         logger.error(`Hotel Not Found ${id}`)
         throw new NotFoundError("Hotel Not Found");
@@ -26,7 +30,11 @@ export async function getHotelById(id:number){
 }
 
 export async function getAllHotel() {
-    const hotel = await Hotel.findAll();
+    const hotel = await Hotel.findAll({
+        where: {
+            deletedAt: null,
+        }
+    });
     if(!hotel){
         logger.error(`All Hotel Not Found`);
         throw new NotFoundError(`All Hotel Not Found`);
@@ -34,4 +42,16 @@ export async function getAllHotel() {
     logger.info('All Hotels Were Found');
     return hotel;
     
+}
+export async function softDeleteHotel(id: number) {
+    const hotel = await Hotel.findByPk(id);
+
+    if(!hotel){
+        logger.error(`Hotel not found ${id}`);
+        throw new NotFoundError(`Hotel not found ${id}`);
+    }
+    hotel.deletedAt = new  Date();
+    await hotel.save();
+    logger.info(`Hotel soft Deleted ${hotel.id}`);
+    return hotel;
 }

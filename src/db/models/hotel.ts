@@ -10,6 +10,7 @@ class Hotel extends Model<InferAttributes<Hotel>, InferCreationAttributes<Hotel>
     declare updatedAt: CreationOptional<Date>;
     declare rating?: number;
     declare ratingCount?: number;
+    declare deletedAt?:CreationOptional<Date | null>;
 }
 Hotel.init({
     id:{
@@ -43,6 +44,10 @@ Hotel.init({
     },
     ratingCount:{
         type:"INTEGER",
+        defaultValue: null,
+    },
+    deletedAt:{
+        type: "TIMESTAMP",
         defaultValue: null,
     }
 },{
