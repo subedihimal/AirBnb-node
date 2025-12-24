@@ -42,5 +42,5 @@ export async function deleteHotelHandler(req: Request, res: Response, next: Next
 
     })
 }
-//deleteHotelHandler
-//updateHotelHandler
+
+//TODO: EditHotel Handler
