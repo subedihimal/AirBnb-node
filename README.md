@@ -1,1 +1,1 @@
-Booking service for airbnb clone
+Hotel service for airbnb clone
