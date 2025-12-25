@@ -23,6 +23,8 @@ model Booking {
   status           BookingStatus   @default(PENDING)
   totalGuest       Int
   idempotencyKey   IdempotencyKey?
+
+  @@map("booking")
 }
 
 model IdempotencyKey {
@@ -33,6 +35,8 @@ model IdempotencyKey {
   finalized Boolean  @default(false)
   bookingId Int      @unique
   booking   Booking? @relation(fields: [bookingId], references: [id])
+
+  @@map("idempotency_key")
 }
 
 enum BookingStatus {
