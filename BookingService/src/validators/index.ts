@@ -7,7 +7,7 @@ export const validateRequestBody = (schema: ZodType)=>{
     return async (req: Request , res: Response, next: NextFunction) =>{
         try{
             logger.info("Validating Request Body");
-            schema.parseAsync(req.body);
+            await schema.parseAsync(req.body);
             logger.info("Request Body Validated")
             next(); 
         }catch(error){
@@ -31,7 +31,6 @@ export const validaateQueryParams = (schema: ZodType)=>{
             return res.status(400).json({
                 message: "Invalid Query Params",
                 error: error,
-
             });
         }
 
