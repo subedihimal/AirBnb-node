@@ -19,9 +19,9 @@ export async function createBookingService(createBookingDTO: CreateBookingDTO){
     }
 
 }
-export async function finalizeBookingService(idempotencyKey: string) {
+export async function confirmBookingService(idempotencyKey: string) {
     const idempotencyKeyData = await getIdempotencyKey(idempotencyKey);
-    if(!idempotencyKey){
+    if(!idempotencyKeyData){
         throw new NotFoundError('Idempotency Key not found');
     }
     if(idempotencyKeyData.finalized){

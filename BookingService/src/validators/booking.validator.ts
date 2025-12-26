@@ -1,6 +1,6 @@
 import {z} from "zod";
 
-const createBookingSchema = z.object({
+export const createBookingSchema = z.object({
     userId: z.number({ message: "User ID  must be present"}),
     hotelId: z.number({message: "Hotel id must be present"}),
     totalGuest: z.number({message: "Total guests id must be present"}).min(1,{message: "Total guest should be alteast 1"}),
