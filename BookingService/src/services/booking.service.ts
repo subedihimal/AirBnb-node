@@ -1,4 +1,4 @@
-import { confirmBooking, createBooking, finalizeIdempotencyKey, getIdempotencyKey } from "../repositories/booking.repository";
+import { confirmBooking, createBooking, createIdempotencyKey, finalizeIdempotencyKey, getIdempotencyKey } from "../repositories/booking.repository";
 import { BadRequestError, NotFoundError } from "../utils/errors/app.error";
 import { generateIdempotencyKey } from "../utils/generateIdempotencyKey";
 
@@ -16,6 +16,12 @@ export async function createBookingService(
         bookingAmount: bookingAmount,
     });
     const idempotencyKey = generateIdempotencyKey();
+
+    await createIdempotencyKey( idempotencyKey, booking.id);
+    return{
+        bookingId: booking.id,
+        idempotencyKey: idempotencyKey,
+    }
 
 }
 export async function finalizeBookingService(idempotencyKey: string) {
