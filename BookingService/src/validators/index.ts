@@ -21,7 +21,7 @@ export const validateRequestBody = (schema: ZodType)=>{
     }
 }
 
-export const validaateQueryParams = (schema: ZodType)=>{
+export const validateQueryParams = (schema: ZodType)=>{
     return async (req: Request , res: Response, next: NextFunction) =>{
         try{
             await schema.parseAsync(req.query);
