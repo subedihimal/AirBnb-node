@@ -4,7 +4,7 @@ import hotelRouter from "./booking.router";
 
 const app = express();
 
-app.use('/ping', pingRouter);
+app.use('/', pingRouter);
 app.use('/bookings',hotelRouter)
 
 export default app;
