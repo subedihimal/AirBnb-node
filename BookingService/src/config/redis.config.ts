@@ -1,10 +1,11 @@
 import IORedis from 'ioredis';
-const Redlock = require('redlock'); 
+import * as Redlock from 'redlock';
+
 import { serverConfig } from '.';
 
 export const redisClient = new IORedis(serverConfig.REDIS_SERVER_URL)
 
-export const redlock = new Redlock([redisClient],{
+export const redlock = new Redlock([redisClient as any],{
     driftFactor: 0.01,
     retryCount: 10,
     retryDelay: 200,
