@@ -1,7 +1,7 @@
 import {  IdempotencyKey, Prisma } from "@prisma/client";
 import prismaClient from "../prisma/client";
 import {validate as isValidUUID} from "uuid";
-import { BadRequestError, InternalSeverError, NotFoundError } from "../utils/errors/app.error";
+import { BadRequestError, NotFoundError } from "../utils/errors/app.error";
 
 export async function createBooking(bookingInput: Prisma.BookingCreateInput) {
     const booking = await prismaClient.booking.create({
