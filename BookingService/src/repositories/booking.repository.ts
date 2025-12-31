@@ -31,9 +31,9 @@ export async function getIdempotencyKeyWithLock(tx: Prisma.TransactionClient,key
     }
 
     //Pesimistic Lock
-    const idempotencyKey: Array<IdempotencyKey> = await tx.$queryRaw`
-    SELECT *FROM idempotency_key WHERE idem_key = ${key} FOR UPDATE;
-    `
+    const idempotencyKey: Array<IdempotencyKey> = await tx.$queryRaw(
+        Prisma.raw(`SELECT *FROM idempotency_key WHERE idem_key = ${key} FOR UPDATE;`)
+    )
 
     if(!idempotencyKey || idempotencyKey.length === 0){
         throw new NotFoundError("Idempotency Key not found");
