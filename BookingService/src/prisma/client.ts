@@ -10,6 +10,7 @@ const adapter = new PrismaMariaDb({
   password: process.env.DATABASE_PASSWORD || "root",
   database: process.env.DATABASE_NAME || "airbnb_booking_service",
   connectionLimit: 5,
+  allowPublicKeyRetrieval: true,     
 });
 
 const prisma = new PrismaClient({ adapter });
