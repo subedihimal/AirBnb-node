@@ -1,6 +1,6 @@
 import { CreateBookingDTO } from "../dto/booking.dto";
 import { confirmBooking, createBooking, createIdempotencyKey, finalizeIdempotencyKey, getIdempotencyKeyWithLock } from "../repositories/booking.repository";
-import { BadRequestError, NotFoundError } from "../utils/errors/app.error";
+import { BadRequestError, InternalSeverError, NotFoundError } from "../utils/errors/app.error";
 import { generateIdempotencyKey } from "../utils/generateIdempotencyKey";
 import prisma from "../prisma/client";
 import { redlock } from "../config/redis.config";
@@ -9,9 +9,11 @@ import { serverConfig } from "../config";
 export async function createBookingService(createBookingDTO: CreateBookingDTO) {
 
     const ttl = serverConfig.LOCK_TTL;
-    const bookingResource = `hotel:${createBookingDTO.hotelId}-user:${createBookingDTO.userId}`;
+    const bookingResource = `hotel:${createBookingDTO.hotelId}`;
 
-    return await redlock.using([bookingResource], ttl, async () => {
+    try {
+        await redlock.acquire([bookingResource], ttl);
+
         const booking = await createBooking({
             userId: createBookingDTO.userId,
             hotelId: createBookingDTO.hotelId,
@@ -26,9 +28,11 @@ export async function createBookingService(createBookingDTO: CreateBookingDTO) {
             idempotencyKey: idempotencyKey,
         }
 
-    });
 
 
+    } catch (err) {
+        throw new InternalSeverError("Failed to acquire a lock");
+    }
 }
 
 //Made a transaction
