@@ -8,7 +8,8 @@ function connectToRedis() {
 
         const redisConfig = {
             port: serverConfig.REDIS_PORT,
-            HOST: serverConfig.REDIS_HOST
+            HOST: serverConfig.REDIS_HOST,
+            maxRetriesPerRequest: null
         }
         return () => {
             if (!connection) {
