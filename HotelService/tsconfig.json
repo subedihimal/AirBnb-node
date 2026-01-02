@@ -45,6 +45,6 @@
     "src/**/*"
   ],
   "exclude": [
-    "node_,modules"
+    "node_modules"
   ]
 }
