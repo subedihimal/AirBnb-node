@@ -7,6 +7,7 @@ import router from "./routers"
 import { setupMailerWorker } from "./processors/email.processor";
 import { NotificationDto } from "./dto/notification.dto";
 import { addEmailToQueue } from "./producers/email.producer";
+import { renderMailTemplate } from "./templates/templates.handlers";
 
 const app = express();
 const PORT = serverConfig.PORT;
@@ -25,7 +26,7 @@ app.use('/api',router);;
 app.use(genericErrorHandler);
 
 
-app.listen(PORT, ()=>{
+app.listen(PORT,  async()=>{
     console.log(`Server is running at: ${PORT}`);
     //Winston Logger
     logger.info("Server Ran At the current time", {"anything data":"This is data area"});
@@ -34,15 +35,8 @@ app.listen(PORT, ()=>{
     logger.info(`Mailer worker setup completed.`);
 
 
-    //Test Payload
-    const sampleNotification: NotificationDto = {
-        to: "simple",
-        subject: "sample-templeet",
-        templetId: "sample-templet",
-        params:{
-            name: "John Doe",
-            orderId: "12345",
-        }
-    }
-    addEmailToQueue(sampleNotification);
+    const response = await renderMailTemplate('welcome',{
+        name: 'John Doe',
+        appName: 'Booking.com'
+    })
 });
