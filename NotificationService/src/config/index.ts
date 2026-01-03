@@ -18,7 +18,7 @@ export const serverConfig: ServerConfig = {
     REDIS_PORT: Number(process.env.REDIS_PORT)|| 6379,
     REDIS_HOST: process.env.REDIS_HOST || "localhost",
     MAIL_USER: process.env.MAIL_USER || " ",
-    MAIL_PASSWORD: process.env.MAIL_PASSWORD || " "
+    MAIL_PASSWORD: process.env.MAIL_PASS || " "
 
 };
 

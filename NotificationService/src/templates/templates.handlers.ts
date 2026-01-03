@@ -12,6 +12,6 @@ export async function renderMailTemplate(templateId: string, params: Record<stri
         return finalTemplate(params);
 
     }catch(err){
-        throw new InternalSeverError(`Template Not Found: ${templateId}`);
+        throw new InternalSeverError(`Template Not Found : ${templateId}`);
     }
 }

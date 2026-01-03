@@ -35,8 +35,14 @@ app.listen(PORT,  async()=>{
     logger.info(`Mailer worker setup completed.`);
 
 
-    const response = await renderMailTemplate('welcome',{
-        name: 'John Doe',
-        appName: 'Booking.com'
-    })
+    //Test Email
+    // addEmailToQueue({
+    //     to:"yormail@gmail.com",
+    //     subject: "Test Email",
+    //     templateId: "welcome",
+    //     params:{
+    //         name: "Your Name",
+    //         appName: "AirBnb-Notification Service"
+    //     }
+    // })
 });
