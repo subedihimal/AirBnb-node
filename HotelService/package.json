@@ -11,7 +11,7 @@
     "dev": "nodemon src/server.ts",
     "migrate": "sequelize-cli db:migrate",
     "rollback": "sequelize-cli db:migrate:undo",
-    "rollbackall":"sequelize-cli db:migrate:undo:all"
+    "rollbackall": "sequelize-cli db:migrate:undo:all"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
