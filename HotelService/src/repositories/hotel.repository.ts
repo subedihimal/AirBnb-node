@@ -1,13 +1,45 @@
 import logger from "../config/logger.config";
 import Hotel from "../db/models/hotel";
-import { createHotelDTO } from "../dto/hotel.dto";
 import { NotFoundError } from "../utils/errors/app.error";
+import BaseRepository from "./base.repository";
 
-//Creating Hotel
-export async function createHotel(hotelData: createHotelDTO) {
+
+export class HotelRepository extends BaseRepository<Hotel> {
+    constructor() {
+        super(Hotel);
+    }
+
+    async findAll() {
+        const hotels = await this.model.findAll({
+            where: {
+                deletedAt: null
+            }
+        });
+    if(!hotels) {
+        throw new NotFoundError(`No hotels in record`);
+    }
+        logger.info(`Hotels found ${hotels.length} `);
+        return hotels;
+    }
+    async softDelete(id: number) {
+        const hotel = await Hotel.findByPk(id);
+
+        if(!hotel){
+            logger.error(`Hotel not found ${ id } `);
+            throw new NotFoundError(`Hotel not found ${ id } `);
+        }
+        hotel.deletedAt = new  Date();
+        await hotel.save();
+        logger.info(`Hotel soft Deleted ${ hotel.id } `);
+        return hotel;
+    }
+}
+
+//Old Code
+/*export async function createHotel(hotelData: createHotelDTO) {
     const hotel = await Hotel.create(hotelData);
 
-    logger.info(`Hotel Created: ${hotel.id}`);
+    logger.info(`Hotel Created: ${ hotel.id } `);
     return hotel;
 }
 
@@ -21,10 +53,10 @@ export async function getHotelById(id:number){
         
     });
     if(!hotel){
-        logger.error(`Hotel Not Found ${id}`)
+        logger.error(`Hotel Not Found ${ id } `)
         throw new NotFoundError("Hotel Not Found");
     }
-    logger.info(`Hotel Found for ${id}`);
+    logger.info(`Hotel Found for ${ id }`);
 
     return hotel;
 }
@@ -47,11 +79,11 @@ export async function softDeleteHotel(id: number) {
     const hotel = await Hotel.findByPk(id);
 
     if(!hotel){
-        logger.error(`Hotel not found ${id}`);
-        throw new NotFoundError(`Hotel not found ${id}`);
+        logger.error(`Hotel not found ${ id } `);
+        throw new NotFoundError(`Hotel not found ${ id } `);
     }
     hotel.deletedAt = new  Date();
     await hotel.save();
-    logger.info(`Hotel soft Deleted ${hotel.id}`);
+    logger.info(`Hotel soft Deleted ${ hotel.id } `);
     return hotel;
-}
+}*/
