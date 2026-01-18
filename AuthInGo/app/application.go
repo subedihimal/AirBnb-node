@@ -2,6 +2,7 @@ package app
 
 import (
 	config "AuthInGo/config/env"
+	"AuthInGo/router"
 	"fmt"
 	"net/http"
 	"time"
@@ -13,16 +14,17 @@ type Config struct {
 type Application struct {
 	Config Config
 }
-//Constructor for Config
-func NewConfig() Config{
-	port := config.GetString("PORT", ":3001");
+
+// Constructor for Config
+func NewConfig() Config {
+	port := config.GetString("PORT", ":3001")
 	return Config{
 		Addr: port,
 	}
 }
 
-//Constructor for Application
-func NewApplication(cfg Config) *Application{
+// Constructor for Application
+func NewApplication(cfg Config) *Application {
 	return &Application{
 		Config: cfg,
 	}
@@ -31,7 +33,7 @@ func NewApplication(cfg Config) *Application{
 func (app *Application) Run() error {
 	server := &http.Server{
 		Addr:         app.Config.Addr,
-		Handler:      nil, //TODO: setup a chil router and put it here
+		Handler:      router.SetupRouter(),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
