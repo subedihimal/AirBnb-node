@@ -2,14 +2,16 @@ package router
 
 import (
 	"AuthInGo/controllers"
-
 	"github.com/go-chi/chi/v5"
 )
+type Router interface{
+	Register(r chi.Router)
+}
 
-func SetupRouter() *chi.Mux{
-	router := chi.NewRouter();
+func SetupRouter(UserRouter Router) *chi.Mux{
+	chiRouter := chi.NewRouter();
 
-	router.Get("/ping", controllers.PingHandler )
-
-	return router;
+	chiRouter.Get("/ping", controllers.PingHandler )
+	UserRouter.Register(chiRouter);
+	return chiRouter;
 }
