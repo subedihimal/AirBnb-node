@@ -14,5 +14,7 @@ func NewUserRouter(_userController *controllers.UserController) Router {
 	}
 }
 func (ur *UserRouter)  Register (r chi.Router){
-	r.Post("/api/profile", ur.userController.GetUserById)
+	r.Get("/api/profile", ur.userController.GetUserById)
+	r.Post("/api/signup", ur.userController.CreateUser)
+	
 }

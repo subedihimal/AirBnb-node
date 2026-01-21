@@ -8,7 +8,7 @@ import (
 
 type UserRepository interface{
 	GetById() (*models.User, error)
-	Create() error
+	Create(username string, email string, hashedPassword string) error
 	GetAll() ([]*models.User, error)
 	DeleteById(id int64) error
 }
@@ -30,11 +30,11 @@ func (u *UserRepositoryImpl) DeleteById(id int64) error{
 	return nil;
 }
 
-func (u *UserRepositoryImpl) Create() (error){
+func (u *UserRepositoryImpl) Create(username string, email string, hashedPassword string) (error){
 	fmt.Println("Starting the user creation process...");
 
 	query := "INSERT INTO users (username, email, password) VALUES( ?, ?, ?)";
-	result, err := u.db.Exec(query, "testuser", "test@test.com", "password123");
+	result, err := u.db.Exec(query, username, email, hashedPassword);
 
 	if err != nil{
 		fmt.Println("Error inserting user", err);
