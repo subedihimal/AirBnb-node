@@ -24,3 +24,8 @@ func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 	uc.UserService.CreateUser()
 	w.Write([]byte("User Fetching Endpoint Done"));
 }
+func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("LoginUser called in user controller")
+	uc.UserService.LoginUser()
+	w.Write([]byte("User Fetching Endpoint Done"));
+}
