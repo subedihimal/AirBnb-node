@@ -2,14 +2,16 @@ package services
 
 import (
 	db "AuthInGo/db/repositories"
-	"fmt"
 	"AuthInGo/utils"
+	"fmt"
+	env "AuthInGo/config/env"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type UserService interface{
 	GetUserById() error
 	CreateUser() error
-	LoginUser() error
+	LoginUser() (string, error)
 }
 
 type UserServiceImpl struct{
@@ -45,7 +47,7 @@ func (u *UserServiceImpl) CreateUser() error{
 	return nil;
 }
 
-func (u *UserServiceImpl) LoginUser() error{
+func (u *UserServiceImpl) LoginUser() (string, error){
 	email := "user@gexample2.com"
 	password := "example password"
 	
@@ -53,15 +55,29 @@ func (u *UserServiceImpl) LoginUser() error{
 
 	if err != nil{
 		fmt.Println("Error fetching user by email", err);
-		return err
+		return "",err
 	}
 
 	isPasswordValid := utils.CheckPasswordHash(password, user.Password);
 	if !isPasswordValid{
 		fmt.Println("Passwrod doesnt match");
-		return nil;
+		return "",nil;
 	}
 
-	fmt.Println("User logged in sucessfully, JWT token will be generated");
-	return nil;
+	//Creating JWT token
+	payload := jwt.MapClaims{
+		"email" : user.Email,
+		"id" : user.Id,
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload);
+
+	tokenString, err := token.SignedString([]byte(env.GetString("JWT_SECRET", "token")));
+
+	if err != nil{
+		fmt.Println("Error Signing the token", err);
+		return  "", err
+	}
+	fmt.Println("Generaated JWT token:", tokenString)
+
+	return tokenString, nil;
 }
