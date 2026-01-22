@@ -46,7 +46,22 @@ func (u *UserServiceImpl) CreateUser() error{
 }
 
 func (u *UserServiceImpl) LoginUser() error{
-	response := utils.CheckPasswordHash("example password", "$2a$10$OYY6cjIDyzlwofjA5kvCFO1BMkuw.afCSM/IXZef4wViaFmld3ds6")
-	fmt.Println("Result of the compare", response);
-	return nil
+	email := "user@gexample2.com"
+	password := "example password"
+	
+	user, err := u.UserRepository. GetByEmail(email);
+
+	if err != nil{
+		fmt.Println("Error fetching user by email", err);
+		return err
+	}
+
+	isPasswordValid := utils.CheckPasswordHash(password, user.Password);
+	if !isPasswordValid{
+		fmt.Println("Passwrod doesnt match");
+		return nil;
+	}
+
+	fmt.Println("User logged in sucessfully, JWT token will be generated");
+	return nil;
 }
