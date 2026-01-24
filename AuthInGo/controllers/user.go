@@ -65,20 +65,8 @@ func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("LoginUser called in user controller")
 	
-	var payload dto.LoginUserRequestDTO;
-
-	if jsonErr := utils.ReadJsonBody(r, &payload); jsonErr != nil{
-		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Something went wrong with the login", jsonErr);
-		fmt.Println("Error in  user login controller", jsonErr);
-		return
-	}
+	payload := r.Context().Value("payload").(dto.LoginUserRequestDTO);
 	fmt.Println("Payload recived", payload);
-
-	if validationErr := utils.Validator.Struct(&payload); validationErr != nil{
-		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Invalid Input data", validationErr);
-		return
-	}
-
 
 
 	jwtToken, err := uc.UserService.LoginUser(&payload);
