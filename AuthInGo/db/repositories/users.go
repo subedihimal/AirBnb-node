@@ -7,8 +7,8 @@ import (
 )
 
 type UserRepository interface {
-	GetById() (*models.User, error)
-	Create(username string, email string, hashedPassword string) error
+	GetById(id int64) (*models.User, error)
+	Create(username string, email string, hashedPassword string) (*models.User, error)
 	GetByEmail(email string) (*models.User, error)
 	GetAll() ([]*models.User, error)
 	DeleteByID(id int64) error
@@ -94,40 +94,40 @@ func (u *UserRepositoryImpl) GetByEmail(email string) (*models.User, error) {
 
 }
 
-func (u *UserRepositoryImpl) Create(username string, email string, hashedPassword string) error {
-	fmt.Println("Starting the user creation process...")
-
-	query := "INSERT INTO users (username, email, password) VALUES( ?, ?, ?)"
+func (u *UserRepositoryImpl) Create(username string, email string, hashedPassword string) (*models.User, error) {
+	query := "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
 	result, err := u.db.Exec(query, username, email, hashedPassword)
 
 	if err != nil {
-		fmt.Println("Error inserting user", err)
-		return err
+		fmt.Println("Error creating user:", err)
+		return nil, err
 	}
-	rowsAffected, rowErr := result.RowsAffected()
 
+	lastInsertID, rowErr := result.LastInsertId()
 	if rowErr != nil {
-		fmt.Println("Error getting rows effected", rowErr)
-		return rowErr
+		fmt.Println("Error getting last insert ID:", rowErr)
+		return nil, rowErr
 	}
-	if rowsAffected == 0 {
-		fmt.Println("No rows were created")
-		return nil
+
+	user := &models.User{
+		Id:       lastInsertID,
+		Username: username,
+		Email:    email,
 	}
-	fmt.Println("User created, rows effected = ", rowsAffected)
 
-	return nil
+	fmt.Println("User created successfully:", user)
 
+	return user, nil
 }
 
-func (u *UserRepositoryImpl) GetById() (*models.User, error) {
+func (u *UserRepositoryImpl) GetById(id int64) (*models.User, error) {
 	fmt.Println("Fetching uesr in user Repository")
 
 	//1. Process the query
 	query := "SELECT id, username, email, password, created_at, updated_at FROM users WHERE id= ?"
 
 	//2 Execute the query
-	row := u.db.QueryRow(query, 1)
+	row := u.db.QueryRow(query, id)
 
 	//3 Process the result
 	user := &models.User{}
