@@ -2,6 +2,8 @@ package router
 
 import (
 	"AuthInGo/controllers"
+	"AuthInGo/middlewares"
+
 	"github.com/go-chi/chi/v5"
 )
 type Router interface{
@@ -10,6 +12,8 @@ type Router interface{
 
 func SetupRouter(UserRouter Router) *chi.Mux{
 	chiRouter := chi.NewRouter();
+
+	chiRouter.Use(middlewares.RateLimiterMiddleware);
 
 	chiRouter.Get("/ping", controllers.PingHandler )
 	chiRouter.Route("/api", func(r chi.Router) {
