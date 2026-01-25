@@ -21,7 +21,7 @@ func (uc *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Fetching user by ID in UserController")
 	// extract userid from url parameters
 	userId := r.URL.Query().Get("id")
-	if userId == "" {
+	if userId == "" {	
 		userId = r.Context().Value("userID").(string) // Fallback to context if not in URL
 	}
 

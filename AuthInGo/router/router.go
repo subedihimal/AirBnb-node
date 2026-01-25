@@ -3,7 +3,6 @@ package router
 import (
 	"AuthInGo/controllers"
 	"AuthInGo/middlewares"
-
 	"github.com/go-chi/chi/v5"
 )
 type Router interface{
