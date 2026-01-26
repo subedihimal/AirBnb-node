@@ -49,7 +49,8 @@ func JWTAuthMiddleware(next http.Handler) http.Handler {
 			http.Error(w, "Invalid token claims", http.StatusUnauthorized)
 			return
 		}
-		fmt.Println("Authenticated user ID:", userId, "Email:", email)
+
+		fmt.Println("Authenticated user ID:", int64(userId), "Email:", email)
 
 		ctx := context.WithValue(r.Context(), "userID", strconv.FormatFloat(userId, 'f', 0, 64))
 		ctx = context.WithValue(ctx, "email", email)
