@@ -20,8 +20,19 @@ func ProxyToService(targetBaseUrl string, pathPreflix string) http.HandlerFunc{
 
 	proxy.Director = func(r *http.Request){
 		orginalDirector(r)
-		r.Host = target.Host;
-		r.URL.Path = strings.TrimPrefix(r.URL.Path, pathPreflix)
+		
+		fmt.Println("Proxying request to:", targetBaseUrl)
+
+		fmt.Println("Orginal request path", r.URL.Path)
+		fmt.Println("Path prefix", pathPreflix)
+
+		strippedPath := strings.TrimPrefix(r.URL.Path, pathPreflix)
+
+		fmt.Println("Modified Stripped Path ", strippedPath)
+		r.URL.Host = target.Host;
+		r.URL.Path = target.Path + strippedPath
+
+		r.Host = target.Host
 
 		if userId, ok := r.Context().Value("UserID").(string); ok{
 			r.Header.Set("X-User-ID", userId)
