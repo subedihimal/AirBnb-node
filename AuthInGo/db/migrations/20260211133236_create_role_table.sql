@@ -1,17 +1,20 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS roles{
-    id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS roles(
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     description TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-};
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+-- +goose StatementEnd
+
+-- +goose StatementBegin
 -- Seeder code
 INSERT INTO roles (name, description) VALUES
 ('admin', 'Administrator with full access'),
 ('user', 'Regular user with limited access'),
-('moderator', 'Moderator with elevated privilages');
+('moderator', 'Moderator with elevated privileges');
 -- +goose StatementEnd
 
 -- +goose Down

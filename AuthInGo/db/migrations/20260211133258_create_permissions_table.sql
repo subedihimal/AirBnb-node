@@ -1,16 +1,17 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXIST permissions(
-    id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS permissions(
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     description TEXT,
     resource VARCHAR(100) NOT NULL,
     action VARCHAR(50) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-)
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 -- +goose StatementEnd
 
+-- +goose StatementBegin
 --Migration Seeder code
 INSERT INTO permissions (name, description, resource, action) VALUES
 ('user:read', 'Permission to read user data', 'user', 'read'),
@@ -24,8 +25,9 @@ INSERT INTO permissions (name, description, resource, action) VALUES
 ('permission:write', 'Permission to write permissions', 'permission', 'write'),
 ('permission:delete', 'Permission to delete permissions', 'permission', 'delete'),
 ('permission:manage', 'Permission to manage permissions', 'permission', 'manage');
+-- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-DELETE TABLE IF EXISTS permission;
+DROP TABLE IF EXISTS permissions;
 -- +goose StatementEnd
