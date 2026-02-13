@@ -109,5 +109,11 @@ func (p *PermissionRepositoryImpl) UpdatePermission(id int64, name string, descr
 	if err != nil {
 		return nil, err
 	}
-	return p.GetPermissionById(id)
+	return &models.Permission{
+		Id: id,
+		Name: name,
+		Description: description,
+		Resource: resource,
+		Action: action,
+	}, nil
 }	
