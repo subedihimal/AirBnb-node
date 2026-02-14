@@ -88,9 +88,9 @@ func (ur *UserRoleImpl) GetUserPermissions(userId int64) ([]*models.Permission, 
 }
 
 func (ur *UserRoleImpl) HasPermission(userId int64, permissionName string) (bool, error){
-	query := `SELECT COUNT(*) FROM user_roles ur 
-			  JOIN role_permissions rp ON ur.role_id = rp.role_id 
-			  JOIN permissions p ON rp.permission_id = p.id 
+	query := `SELECT COUNT(*) > 0 FROM user_roles ur 
+			  INNER JOIN role_permissions rp ON ur.role_id = rp.role_id 
+			  INNER JOIN permissions p ON rp.permission_id = p.id 
 			  WHERE ur.user_id = ? AND p.name = ?`
 	var count int
 	err := ur.db.QueryRow(query, userId, permissionName).Scan(&count)
@@ -98,8 +98,8 @@ func (ur *UserRoleImpl) HasPermission(userId int64, permissionName string) (bool
 }
 
 func (ur *UserRoleImpl) HasRole(userId int64, roleName string) (bool, error){
-	query := `SELECT COUNT(*) FROM user_roles ur 
-			  JOIN roles r ON ur.role_id = r.id 
+	query := `SELECT COUNT(*) > 0 FROM user_roles ur 
+			  INNER JOIN roles r ON ur.role_id = r.id 
 			  WHERE ur.user_id = ? AND r.name = ?`
 	var count int
 	err := ur.db.QueryRow(query, userId, roleName).Scan(&count)
