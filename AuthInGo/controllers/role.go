@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"fmt"
 	"strconv"
+	"github.com/go-chi/chi/v5"
 )
 
 type RoleController struct {
@@ -19,7 +20,7 @@ func NewRoleController(roleService services.RoleService) *RoleController {
 }
 
 func (rc *RoleController) GetRoleById(w http.ResponseWriter, r *http.Request) {
-	roleId := r.URL.Query().Get("id");
+	roleId := chi.URLParam(r, "id");
 	if roleId == "" {
 		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Role ID is required", fmt.Errorf("Role ID is required"))
 		return
