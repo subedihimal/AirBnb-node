@@ -24,7 +24,7 @@ func NewRoleRepository(_db *sql.DB) RoleRepository{
 	}
 }
 
-func (r *RoleRepositoryImpl) GetRoleById (id int64) (*models.Role, error){
+func (r *RoleRepositoryImpl) GetRoleById(id int64) (*models.Role, error){
 	query:= "SELECT id, name, description, created_at, updated_at FROM roles WHERE id= ?";
 
 	row := r.db.QueryRow(query, id)
@@ -70,17 +70,25 @@ func (r *RoleRepositoryImpl) GetAllRoles() ([]*models.Role, error){
 	return roles, nil
 }
 
-func (r *RoleRepositoryImpl) CreateRole(name string, description string) (*models.Role, error){
-	query := "INSERT INTO roles (name, description) VALUES (?, ?)"
+func (r *RoleRepositoryImpl) CreateRole(name string, description string) (*models.Role, error) {
+	query := "INSERT INTO roles (name, description, created_at, updated_at) VALUES (?, ?, NOW(), NOW())"
 	result, err := r.db.Exec(query, name, description)
 	if err != nil {
 		return nil, err
 	}
+
 	id, err := result.LastInsertId()
 	if err != nil {
 		return nil, err
 	}
-	return r.GetRoleById(id)
+
+	return &models.Role{
+		Id:          id,
+		Name:        name,
+		Description: description,
+		CreatedAt:   "", // Will be set by the database
+		UpdatedAt:   "", // Will be set by the database
+	}, nil
 }
 
 func (r *RoleRepositoryImpl) DeleteRoleById(id int64) error{
@@ -99,12 +107,19 @@ func (r *RoleRepositoryImpl) DeleteRoleById(id int64) error{
 	return nil
 }
 
-func (r *RoleRepositoryImpl) UpdateRole(id int64, name string, description string)(*models.Role, error){
-	query := "UPDATE roles SET name = ?, description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+func (r *RoleRepositoryImpl) UpdateRole(id int64, name string, description string) (*models.Role, error) {
+	query := "UPDATE roles SET name = ?, description = ?, updated_at = NOW() WHERE id = ?"
 	_, err := r.db.Exec(query, name, description, id)
 	if err != nil {
 		return nil, err
 	}
-	return r.GetRoleById(id)
+
+	return &models.Role{
+		Id:          id,
+		Name:        name,
+		Description: description,
+		CreatedAt:   "", // Will be set by the database
+		UpdatedAt:   "", // Will be set by the database
+	}, nil
 }
 

@@ -71,8 +71,8 @@ func (p *PermissionRepositoryImpl) GetAllPermissions() ([]*models.Permission, er
 	return permissions, nil
 }
 
-func (p *PermissionRepositoryImpl) CreatePermission(name string, description string, resource string, action string) (*models.Permission, error){
-	query := "INSERT INTO permissions (name, description, resource, action) VALUES (?, ?, ?, ?)"
+func (p *PermissionRepositoryImpl) CreatePermission(name string, description string, resource string, action string) (*models.Permission, error) {
+	query := "INSERT INTO permissions (name, description, resource, action, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())"
 	result, err := p.db.Exec(query, name, description, resource, action)
 	if err != nil {
 		return nil, err
@@ -83,7 +83,15 @@ func (p *PermissionRepositoryImpl) CreatePermission(name string, description str
 		return nil, err
 	}
 
-	return p.GetPermissionById(id)
+	return &models.Permission{
+		Id:          id,
+		Name:        name,
+		Description: description,
+		Resource:    resource,
+		Action:      action,
+		CreatedAt:   "NOW()",
+		UpdatedAt:   "NOW()",
+	}, nil
 }
 
 func (p *PermissionRepositoryImpl) DeletePermissionById(id int64) error {
