@@ -7,7 +7,7 @@ import (
 
 type RoleRepository interface{
 	GetRoleById(id int64) (*models.Role, error)
-	GetRolesByName(name string) (*models.Role, error)
+	GetRoleByName(name string) (*models.Role, error)
 	GetAllRoles() ([]*models.Role, error)
 	CreateRole(name string, description string) (*models.Role, error)
 	DeleteRoleById(id int64) error
@@ -35,7 +35,7 @@ func (r *RoleRepositoryImpl) GetRoleById(id int64) (*models.Role, error){
 	}
 	return role, nil
 }
-func (r *RoleRepositoryImpl) GetRolesByName(name string) (*models.Role, error){
+func (r *RoleRepositoryImpl) GetRoleByName(name string) (*models.Role, error){
 	query:= "SELECT id, name, description, created_at, updated_at FROM roles WHERE name= ?";
 
 	row := r.db.QueryRow(query, name)
