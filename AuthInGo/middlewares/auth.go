@@ -85,19 +85,19 @@ func RequireAllRoles(roles ...string) func(http.Handler) http.Handler {
 
 			urr := repo.NewUserRoleRepository(dbConn)
 
-			hasAllRoles, hasAllRolesErr := urr.HasAllRoles(userId, roles)
-			fmt.Println("userid", userId, "roles", roles, "hasAllRoles", hasAllRoles)
-			if hasAllRolesErr != nil {
-				http.Error(w, "Error checking user roles: "+hasAllRolesErr.Error(), http.StatusInternalServerError)
+			hasAnyRole, hasAnyRolesErr := urr.HasAnyRole(userId, roles)
+			fmt.Println("userid", userId, "roles", roles, "hasAnyRole", hasAnyRole)
+			if hasAnyRolesErr != nil {
+				http.Error(w, "Error checking user roles: "+hasAnyRolesErr.Error(), http.StatusInternalServerError)
 				return
 			}
 
-			if !hasAllRoles {
+			if !hasAnyRole {
 				http.Error(w, "Forbidden: You do not have the required roles", http.StatusForbidden)
 				return
 			}
 
-			fmt.Println("User has all required roles:", roles)
+			fmt.Println("User has any of the required roles:", roles)
 
 			next.ServeHTTP(w, r)
 		})
