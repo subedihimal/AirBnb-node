@@ -13,6 +13,9 @@ const roomRepository = new RoomRepository();
 export async function generateRooms(jobData: RoomGenerationJob){
     //Checking if the category exist
 
+    let totalRoomsCreated = 0;
+    let totalDatesProcessed = 0;
+
     const roomCategory = await roomCategoryRepository.findById(jobData.roomCategoryId);
     if(!roomCategory){
         throw new Error(`Room category with id ${jobData.roomCategoryId} not found`);
@@ -26,6 +29,30 @@ export async function generateRooms(jobData: RoomGenerationJob){
     }
     
     const totalDays = Math.ceil((endDate.getTime() - startDate.getTime())/(1000*60*60*24));
+
+    const batchSize = jobData.batchSize || 100;
+
+    const currentDate = new Date(startDate);
+
+    while(currentDate <= endDate){
+        const batchEndDate = new Date(currentDate);
+        batchEndDate.setDate(batchEndDate.getDate() + batchSize - 1);
+
+        if(batchEndDate > endDate){
+            batchEndDate.setTime(endDate.getTime());
+        }
+
+        const batchResult = await processDateBatch(roomCategory, currentDate, batchEndDate, jobData.priceOverride);
+
+        totalRoomsCreated += batchResult.roomsCreated;
+        totalDatesProcessed += batchResult.datesProcessed;
+
+        currentDate.setDate(batchEndDate.getTime());
+    }
+    return {
+        totalRoomsCreated,
+        totalDatesProcessed
+    }
 
 }
 
