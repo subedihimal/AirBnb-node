@@ -6,7 +6,7 @@ import { attachCoorelationMiddleware } from "./middleware/correlation.middleware
 import sequelize from "./db/models/sequelize";
 import router from "./routers";
 import { setupRoomGenerationWorker } from "./processors/roomGeneration.processor";
-
+import { startScheduler } from "./schedulers/roomScheduler";
 const app = express();
 const PORT = serverConfig.PORT;
 
@@ -32,4 +32,7 @@ app.listen(PORT, async ()=>{
     logger.info("Connection to the db established");
     logger.info('----------------------------------------');
     setupRoomGenerationWorker();
+
+    startScheduler();
+    logger.info('Room availability extension scheduler started');
 });

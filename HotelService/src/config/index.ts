@@ -4,6 +4,8 @@ type ServerConfig = {
     PORT: number,
     REDIS_PORT: number,
     REDIS_HOST: string,
+    ROOM_CRON: string,
+
 }
 type DBConfig ={
     DB_HOST: string,
@@ -21,6 +23,8 @@ export const serverConfig: ServerConfig = {
     PORT: Number(process.env.PORT) || 3000,
     REDIS_PORT: Number(process.env.REDIS_PORT) || 6379,
     REDIS_HOST: process.env.REDIS_HOST || 'localhost',
+    ROOM_CRON: process.env.ROOM_CRON || '0 2 * * *',
+
 };
 export const dbConfig:DBConfig ={
     DB_HOST: process.env.DB_HOST || 'localhost',
