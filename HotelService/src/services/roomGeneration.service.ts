@@ -31,6 +31,10 @@ export async function generateRooms(jobData: RoomGenerationJob){
         logger.error("Start date must be before end date");
         throw new BadRequestError("Start date must be before end date");
     }
+    if (startDate < new Date()) {
+        logger.error(`Start date must be in the future`);
+        throw new BadRequestError(`Start date must be in the future`);
+    }
     
     const totalDays = Math.ceil((endDate.getTime() - startDate.getTime())/(1000*60*60*24));
     logger.info(`Total days to process: ${totalDays}`);
@@ -83,8 +87,11 @@ export async function processDateBatch(roomCategory: RoomCategory, startDate: Da
            roomsToCreate.push({
                 hotelId: roomCategory.hotelId,
                 roomCategoryId: roomCategory.id,
-                dateOfAvailability: currentDate,
-                price: priceOverride || roomCategory.price
+                dateOfAvailability: new Date(currentDate),
+                price: priceOverride || roomCategory.price,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                deletedAt: null,
            })
            logger.info(`Room added to creation list for category ${roomCategory.id} on date ${currentDate.toDateString()}`);
         }
