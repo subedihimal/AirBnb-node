@@ -5,6 +5,8 @@ import { BadRequestError } from "../utils/errors/app.error";
 import RoomRepository from "../repositories/room.repository";
 import Room from "../db/models/room";
 import { CreationAttributes } from "sequelize";
+import logger from "../config/logger.config";
+import { log } from "node:console";
 
 const roomCategoryRepository = new RoomCategoryRepository();
 const roomRepository = new RoomRepository();
@@ -18,6 +20,7 @@ export async function generateRooms(jobData: RoomGenerationJob){
 
     const roomCategory = await roomCategoryRepository.findById(jobData.roomCategoryId);
     if(!roomCategory){
+        logger.error(`Room category not found ${jobData.roomCategoryId} not found`);
         throw new Error(`Room category with id ${jobData.roomCategoryId} not found`);
     }
 
@@ -25,24 +28,30 @@ export async function generateRooms(jobData: RoomGenerationJob){
     const endDate = new Date(jobData.endDate);
 
     if (startDate >= endDate) {
+        logger.error("Start date must be before end date");
         throw new BadRequestError("Start date must be before end date");
     }
     
     const totalDays = Math.ceil((endDate.getTime() - startDate.getTime())/(1000*60*60*24));
+    logger.info(`Total days to process: ${totalDays}`);
 
     const batchSize = jobData.batchSize || 100;
 
     const currentDate = new Date(startDate);
 
-    while(currentDate <= endDate){
+    while(currentDate < endDate){
         const batchEndDate = new Date(currentDate);
+
         batchEndDate.setDate(batchEndDate.getDate() + batchSize - 1);
+        logger.info(`Processing batch from ${currentDate.toDateString()} to ${batchEndDate.toDateString()}`);
+
 
         if(batchEndDate > endDate){
             batchEndDate.setTime(endDate.getTime());
         }
 
         const batchResult = await processDateBatch(roomCategory, currentDate, batchEndDate, jobData.priceOverride);
+        logger.info(`Batch processed. Rooms created: ${batchResult.roomsCreated}, Dates processed: ${batchResult.datesProcessed}`);
 
         totalRoomsCreated += batchResult.roomsCreated;
         totalDatesProcessed += batchResult.datesProcessed;
@@ -64,17 +73,20 @@ export async function processDateBatch(roomCategory: RoomCategory, startDate: Da
     const roomsToCreate: CreationAttributes<Room>[] = [];
 
     const currentDate = new Date(startDate);
+    logger.info(`Processing date batch from ${startDate.toDateString()} to ${endDate.toDateString()}`);
 
     //Todo: use better query to get the rooms
     while(currentDate <= endDate){
         const existingRoom = await roomRepository.findByRoomCategoryIdAndDate(roomCategory.id, currentDate);
         if(!existingRoom){
+            logger.info(`No existing room found for category ${roomCategory.id} on date ${currentDate.toDateString()}. Creating new room.`);
            roomsToCreate.push({
                 hotelId: roomCategory.hotelId,
                 roomCategoryId: roomCategory.id,
                 dateOfAvailability: currentDate,
                 price: priceOverride || roomCategory.price
            })
+           logger.info(`Room added to creation list for category ${roomCategory.id} on date ${currentDate.toDateString()}`);
         }
         currentDate.setDate(currentDate.getDate() + 1);
         datesProcessed++;

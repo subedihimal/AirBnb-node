@@ -5,6 +5,7 @@ import logger from './config/logger.config'
 import { attachCoorelationMiddleware } from "./middleware/correlation.middleware";
 import sequelize from "./db/models/sequelize";
 import router from "./routers";
+import { setupRoomGenerationWorker } from "./processors/roomGeneration.processor";
 
 const app = express();
 const PORT = serverConfig.PORT;
@@ -30,5 +31,5 @@ app.listen(PORT, async ()=>{
     await sequelize.authenticate();
     logger.info("Connection to the db established");
     logger.info('----------------------------------------');
-
+    setupRoomGenerationWorker();
 });

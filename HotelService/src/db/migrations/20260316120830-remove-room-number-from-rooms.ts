@@ -6,7 +6,5 @@ module.exports = {
 
   async down(queryInterface: QueryInterface) {
     await queryInterface.sequelize.query(`ALTER TABLE rooms ADD COLUMN room_no INTEGER;`);
-    
-    
   },
 };
