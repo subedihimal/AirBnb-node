@@ -19,6 +19,9 @@ export async function createBookingService(createBookingDTO: CreateBookingDTO) {
             hotelId: createBookingDTO.hotelId,
             totalGuest: createBookingDTO.totalGuests,
             bookingAmount: createBookingDTO.bookingAmount,
+            checkInDate: createBookingDTO.checkInDate,
+            checkOutDate: createBookingDTO.checkOutDate,
+            roomCategoryId: createBookingDTO.roomCategoryId,
         });
         const idempotencyKey = generateIdempotencyKey();
 
