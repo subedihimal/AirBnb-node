@@ -8,6 +8,7 @@ type ServerConfig = {
     DB_USER: string,
     DB_PASSWORD: string,
     DB_NAME:string
+    HOTEL_SERVICE_URL: string
 }
 
 function loadEnv(){
@@ -22,8 +23,7 @@ export const serverConfig: ServerConfig = {
     DB_HOST: process.env.DATABASE_HOST || 'localhost',
     DB_NAME: process.env.DATABASE_NAME || 'airbnb_booking_service',
     DB_USER: process.env.DATABASE_USER || 'root',
-    DB_PASSWORD: process.env.DATABASE_PASSWORD || 'root'
-
-
+    DB_PASSWORD: process.env.DATABASE_PASSWORD || 'root',
+    HOTEL_SERVICE_URL: process.env.HOTEL_SERVICE_URL || "http://localhost:3000/api/"
 };
 
