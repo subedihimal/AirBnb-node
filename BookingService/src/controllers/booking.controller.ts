@@ -3,6 +3,7 @@ import { Request, Response } from "express"
 import { BadRequestError } from "../utils/errors/app.error";
 
 export const createBookingHandler = async (req: Request, res: Response)=>{
+
     const booking = await createBookingService(req.body);
     res.status(201).json({
         bookingId: booking.bookingId,

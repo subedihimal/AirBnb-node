@@ -4,7 +4,7 @@ import { genericErrorHandler } from "./middleware/error.middleware";
 import logger from './config/logger.config'
 import { attachCoorelationMiddleware } from "./middleware/correlation.middleware";
 import router from './routers'
-import { addEmailToQueue } from "./producers/email.producer";
+// import { addEmailToQueue } from "./producers/email.producer";
 
 const app = express();
 const PORT = serverConfig.PORT;
@@ -31,14 +31,14 @@ app.listen(PORT, ()=>{
 
 
     //Sample mail notification
-    addEmailToQueue({
-        to: "simple mail form booking",
-        subject: "sample email to booking",
-        templetId: "sample-templet",
-        params:{
-            name: "John Doe",
-            orderId: "12345",
-        }
+    // addEmailToQueue({
+    //     to: "simple mail form booking",
+    //     subject: "sample email to booking",
+    //     templetId: "sample-templet",
+    //     params:{
+    //         name: "John Doe",
+    //         orderId: "12345",
+    //     }
 
-    })
+    // })
 });

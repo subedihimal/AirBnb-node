@@ -5,12 +5,20 @@ import { generateIdempotencyKey } from "../utils/generateIdempotencyKey";
 import Prisma from "../../prisma/client";
 import { redlock } from "../config/redis.config";
 import { serverConfig } from "../config";
-import { getAvailableRooms } from "../api/hotel.api";
+import { getAvailableRooms, updateBookingIdToRooms } from "../api/hotel.api";
+
+type AvailableRoom = {
+    id: number;
+    roomCategoryId: number;
+    dateOfAvailability: Date;
+}
 
 export async function createBookingService(createBookingDTO: CreateBookingDTO) {
 
     const ttl = serverConfig.LOCK_TTL;
     const bookingResource = `hotel:${createBookingDTO.hotelId}`;
+    // TODO Modify locks to use available rooms instead of hotel id to increase concurrency
+
 
     const availableRooms = await getAvailableRooms(
         createBookingDTO.roomCategoryId,
@@ -34,13 +42,22 @@ export async function createBookingService(createBookingDTO: CreateBookingDTO) {
             hotelId: createBookingDTO.hotelId,
             totalGuest: createBookingDTO.totalGuests,
             bookingAmount: createBookingDTO.bookingAmount,
-            checkInDate: createBookingDTO.checkInDate,
-            checkOutDate: createBookingDTO.checkOutDate,
+            checkInDate: new Date(createBookingDTO.checkInDate),
+            checkOutDate: new Date(createBookingDTO.checkOutDate),
             roomCategoryId: createBookingDTO.roomCategoryId,
         });
         const idempotencyKey = generateIdempotencyKey();
 
+        console.log("Pass 1")
+
         await createIdempotencyKey(idempotencyKey, booking.id);
+
+        console.log("Pass 2")
+
+        await updateBookingIdToRooms(booking.id, availableRooms.data.map((room: AvailableRoom) => room.id));
+
+        console.log("Pass 3")
+
         return {
             bookingId: booking.id,
             idempotencyKey: idempotencyKey,
@@ -65,6 +82,8 @@ export async function confirmBookingService(idempotencyKey: string) {
         }
         const booking = await confirmBooking(tx, idempotencyKeyData.bookingId);
         await finalizeIdempotencyKey(tx, idempotencyKey);
+
+        //TODO: Mark the booking as null if booking is cancelled or failed
 
         return booking;
 
